@@ -8,6 +8,7 @@ var productSchema = new mongoose.Schema({
 	category: String,
 	disc_perc: Number,
 	discount: Number,
+	tax: Number,
 	reviews: [
 		{
 			type: mongoose.Schema.Types.ObjectId,

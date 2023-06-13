@@ -18,32 +18,8 @@ router.get("/new/:id/:return", inCart, function (req, res) {
 			req.flash("error", "Product not found!!");
 			res.redirect("/products");
 		} else {
-			category = product.category;
-			tax = 0;
-			if (category == 'Products') {
-				if (product.price > 1000 && product.price <= 5000) {
-					tax += (product.price * 12) / 100;
-				}
-				else if (product.price > 5000) {
-					tax += (product.price * 18) / 100;
-				}
-				else{
-					tax += 200;
-				}
-			} else {
-				if (product.price > 1000 && product.price <= 8000) {
-					tax += product.price/10;
-				}
-				else if (product.price > 8000) {
-					tax += (product.price * 15) / 100;
-				}
-				else {
-					tax += 100;
-				}
-			}
-			tax = Math.round(tax);
-			req.user.cart.tax_total += tax;
-			req.user.cart.total += product.price + tax;
+			req.user.cart.tax_total += product.tax;
+			req.user.cart.total += product.price + product.tax;
 			req.user.cart.discount += product.mrp - product.price;
 			req.user.cart.cart_total += product.mrp;
 			req.user.save();
@@ -99,47 +75,24 @@ router.get("/:id/:action", isLoggedIn, function (req, res) {
 			for (var i = user.cart.items.length - 1; i >= 0; i--) {
 				var cartItem = user.cart.items[i];
 				if (cartItem.product._id.equals(req.params.id)) {
-					tax = 0;
-					if (category == 'Products') {
-						if (cartItem.product.price > 1000 && cartItem.product.price <= 5000) {
-							tax += (cartItem.product.price * 12) / 100;
-						}
-						else if (cartItem.product.price > 5000) {
-							tax += (cartItem.product.price * 18) / 100;
-						}
-						else{
-							tax += 200;
-						}
-					} else {
-						if (cartItem.product.price > 1000 && cartItem.product.price <= 8000) {
-							tax += cartItem.product.price/10;
-						}
-						else if (cartItem.product.price > 8000) {
-							tax += (cartItem.product.price * 15) / 100;
-						}
-						else{
-							tax += 100;
-						}
-					}
-					tax = Math.round(tax);
 					if (req.params.action == 'rem') {
 						user.cart.cart_total -= (cartItem.product.mrp * cartItem.qty);
 						user.cart.discount -= (cartItem.product.discount * cartItem.qty);
-						user.cart.total -= ((cartItem.product.price + tax) * cartItem.qty);
-						user.cart.tax_total -= (cartItem.qty*tax);
+						user.cart.total -= ((cartItem.product.price + cartItem.product.tax) * cartItem.qty);
+						user.cart.tax_total -= (cartItem.qty*cartItem.product.tax);
 						user.cart.items.splice(i, 1);
 					} else {
 						if (req.params.action == 'inc') {
 							user.cart.cart_total += cartItem.product.mrp;
 							user.cart.discount += cartItem.product.discount;
-							user.cart.total += cartItem.product.price + tax;
-							user.cart.tax_total += tax;
+							user.cart.total += cartItem.product.price + cartItem.product.tax;
+							user.cart.tax_total += cartItem.product.tax;
 							cartItem.qty++;
 						} else if (req.params.action == 'dec') {
 							user.cart.cart_total -= cartItem.product.mrp;
 							user.cart.discount -= cartItem.product.discount;
-							user.cart.total -= cartItem.product.price + tax;
-							user.cart.tax_total -= tax;
+							user.cart.total -= cartItem.product.price + cartItem.product.tax;
+							user.cart.tax_total -= cartItem.product.tax;
 							cartItem.qty--;
 							if (cartItem.qty == 0) {
 								user.cart.items.splice(i, 1);
