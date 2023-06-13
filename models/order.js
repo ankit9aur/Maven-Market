@@ -30,9 +30,7 @@ var orderSchema = new mongoose.Schema({
 		total_tax: Number,
 		cart_total: Number,
 		discount: Number,
-		total: Number,
-		service_count: Number,
-		product_count: Number
+		total: Number
 	},
 	user: {
 		type: mongoose.Schema.Types.ObjectId,

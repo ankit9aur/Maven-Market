@@ -3,6 +3,11 @@ var router = express.Router();
 var User = require("../models/user");
 var Order = require("../models/order");
 
+var commonMiddlewares = require("../middlewares/common.js");
+
+var isLoggedIn = commonMiddlewares.isLoggedIn;
+var isAdmin = commonMiddlewares.isAdmin;
+
 router.get("/order/:id/success",isLoggedIn,function(req,res){
    	res.render("cart/confirmation",{id: req.params.id});
 });
@@ -42,27 +47,5 @@ router.get("/orders/:id",isLoggedIn,function(req,res){
 		}
 	});
 });
-
-function isLoggedIn(req,res,next){
-	if(req.isAuthenticated()){
-		return next();
-	}
-	req.flash("error","Login to continue!!");
-	res.redirect("/login");
-}
-
-function isAdmin(req,res,next) {
-	usname = req.user.username;
-	if(req.isAuthenticated()) {
-		if(usname=='admin') {
-			return next();
-		}
-		req.flash("error","Permission Denied!!");
-		res.redirect("/products");
-	} else {
-		req.flash("error","Login to continue!!");
-		res.redirect("/login");
-	}
-}
 
 module.exports = router;

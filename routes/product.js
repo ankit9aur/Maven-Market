@@ -2,6 +2,9 @@ var express = require("express");
 var router = express.Router();
 var Product = require("../models/product");
 var User = require("../models/user");
+var commonMiddlewares = require("../middlewares/common.js");
+
+var isAdmin = commonMiddlewares.isAdmin;
 
 router.get("/",function(req,res){
 	Product.find({},function(err,products){
@@ -61,19 +64,5 @@ router.get("/:id",function(req,res){
 		}
 	});
 });
-
-function isAdmin(req,res,next) {
-	if(req.isAuthenticated()) {
-		if(req.user.username=='admin') {
-			next();
-		} else {
-			req.flash("error","Permission Denied!!");
-			res.redirect("/products");
-		}
-	} else {
-		req.flash("error","Login to continue!!");
-		res.redirect("/login");
-	}
-}
 
 module.exports = router;

@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-const indexRoutes = require("./routes/index");
+const indexRoutes = require("./routes/account");
 const productRoutes = require("./routes/product");
 const reviewRoutes = require("./routes/review");
 const cartRoutes = require("./routes/cart");

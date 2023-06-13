@@ -2,6 +2,10 @@ var express = require("express");
 var router = express.Router();
 var Product = require("../models/product");
 var User = require("../models/user");
+var commonMiddlewares = require("../middlewares/common.js");
+
+var isLoggedIn = commonMiddlewares.isLoggedIn;
+var inCart = commonMiddlewares.inCart;
 
 router.get("/new/:id/:return", inCart, function (req, res) {
 	var cartItem = {
@@ -152,28 +156,6 @@ router.get("/:id/:action", isLoggedIn, function (req, res) {
 	});
 });
 
-function inCart(req, res, next) {
-	if (req.isAuthenticated()) {
-		if (req.user.cart.items.some(function (cartItem) {
-			return cartItem.product._id.equals(req.params.id);
-		})) {
-			req.flash("error", "This product is already present in your cart!!");
-			res.redirect("/products");
-		} else {
-			next();
-		}
-	} else {
-		req.flash("error", "Login to continue!!");
-		res.redirect("/login");
-	}
-}
 
-function isLoggedIn(req, res, next) {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	req.flash("error", "Login to continue!!");
-	res.redirect("/login");
-}
 
 module.exports = router;

@@ -3,7 +3,6 @@ var Product = require("../models/product");
 
 router.get("/", (req, res) => {
     const searchItem = req.query.q;
-    // console.log(searchItem);
     Product.find({
         $or: [ 
             { name: { $regex: `.*${searchItem}.*`, $options : 'i' } }, 

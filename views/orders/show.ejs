@@ -46,6 +46,8 @@
 				<h6>Order Total</h6>
 				<h6 class="float-right disc">(-)₹<%=order.checkoutCart.discount%></h6>
 				<h6 class="disc">Discount</h6>
+				<h6 class="float-right">₹<%=order.checkoutCart.total_tax%></h6>
+				<h6>Total Tax</h6>
 				<h6 class="float-right">₹<%=order.checkoutCart.total%></h6>
 				<h6>Total Payable</h6>
 				<h6>Payment Method: <%= order.paymentMode %></h6>

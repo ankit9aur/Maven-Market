@@ -3,6 +3,9 @@ var router = express.Router();
 var Order = require("../models/order");
 var OrderCount = require("../models/orderCount");
 var User = require("../models/user");
+var commonMiddlewares = require("../middlewares/common.js");
+
+var isLoggedIn = commonMiddlewares.isLoggedIn;
 
 router.get("/",isLoggedIn,function(req,res){
 	res.render("cart/checkout",{user: req.user});
@@ -28,7 +31,8 @@ router.post("/",isLoggedIn,function(req,res){
 						items: [],
 						cart_total: user.cart.cart_total,
 						discount: user.cart.discount,
-						total: user.cart.total
+						total: user.cart.total,
+						total_tax: user.cart.tax_total
 					},
 					user: req.user
 				}
@@ -57,6 +61,7 @@ router.post("/",isLoggedIn,function(req,res){
 						req.user.cart.cart_total=0;
 						req.user.cart.discount=0;
 						req.user.cart.total=0;
+						req.user.cart.tax_total=0;
 						req.user.save();
 						req.flash("success","Order placed successfully!!")
 						res.redirect("/order/"+order._id+"/success");
@@ -67,12 +72,6 @@ router.post("/",isLoggedIn,function(req,res){
 	});
 });
 
-function isLoggedIn(req,res,next){
-	if(req.isAuthenticated()){
-		return next();
-	}
-	req.flash("error","Login to continue!!");
-	res.redirect("/login");
-}
+
 
 module.exports = router;
