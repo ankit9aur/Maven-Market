@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 var orderCountSchema = new mongoose.Schema({
-	count: Number
+  count: Number,
 });
 
-module.exports = mongoose.model('OrderCount',orderCountSchema);
+module.exports = mongoose.model("OrderCount", orderCountSchema);
